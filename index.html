@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tea Leaf Language - Ta'ang</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <style>
+        :root {
+            --maroon: #6e0d0d;
+            --dark-maroon: #4a0606;
+            --cream: #fdf5e6;
+            --gold: #d4af37;
+            --tea-green: #4F7942;
+            --glass: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            background: radial-gradient(circle, var(--maroon), var(--dark-maroon));
+            color: var(--cream);
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* 1. Dialect Selector */
+        .dialect-bar {
+            width: 100%;
+            background: rgba(0,0,0,0.3);
+            padding: 15px 0;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .dialect-btn {
+            background: transparent;
+            border: 1.5px solid var(--gold);
+            color: var(--gold);
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .dialect-btn.active {
+            background: var(--gold);
+            color: var(--maroon);
+            font-weight: bold;
+        }
+
+        /* 2. SVG Tea Leaf Streak Section */
+        .streak-container {
+            position: relative;
+            width: 220px;
+            height: 220px;
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .streak-number {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: var(--gold);
+            z-index: 5;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .leaf-svg {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            transition: 0.5s ease;
+        }
+
+        /* ပတ်လည်နေရာချခြင်း */
+        .l1 { top: 0; transform: rotate(0deg); }
+        .l2 { right: 10px; top: 40px; transform: rotate(72deg); }
+        .l3 { right: 40px; bottom: 0; transform: rotate(144deg); }
+        .l4 { left: 40px; bottom: 0; transform: rotate(216deg); }
+        .l5 { left: 10px; top: 40px; transform: rotate(288deg); }
+
+        /* 3. Learning Card */
+        .card {
+            background: var(--cream);
+            color: var(--maroon);
+            width: 85%;
+            max-width: 380px;
+            border-radius: 25px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+            margin-bottom: 30px;
+        }
+
+        .word-main { font-size: 2.5rem; margin: 10px 0; font-weight: bold; }
+        .word-sub { color: #666; font-style: italic; margin-bottom: 20px; }
+
+        .action-btns {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .circle-btn {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-audio { background: #eee; color: var(--maroon); }
+        .btn-mic { background: var(--maroon); color: white; box-shadow: 0 4px 10px rgba(110, 13, 13, 0.3); }
+
+        /* 4. Progress Bar */
+        .level-section {
+            width: 85%;
+            max-width: 380px;
+            margin-bottom: 100px;
+        }
+
+        .level-info {
+            display: flex;
+            justify-content: space-between;
+            color: var(--gold);
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+        }
+
+        .progress-bg {
+            height: 12px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .progress-fill {
+            width: 45%;
+            height: 100%;
+            background: linear-gradient(90deg, var(--gold), #ffdf80);
+        }
+
+        /* 5. Avatar Guide */
+        .avatar-box {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            background: var(--gold);
+            padding: 10px;
+            border-radius: 50%;
+            border: 3px solid var(--cream);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        /* 6. Bottom Nav */
+        .nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: #2a0303;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            border-top: 1px solid var(--gold);
+        }
+
+        .nav-item {
+            color: var(--cream);
+            text-decoration: none;
+            text-align: center;
+            font-size: 0.7rem;
+            opacity: 0.6;
+        }
+
+        .nav-item.active { opacity: 1; color: var(--gold); }
+    </style>
+</head>
+<body>
+
+    <div class="dialect-bar">
+        <button class="dialect-btn active">နီရရတ် (Pale)</button>
+        <button class="dialect-btn">ငုတာ (Rumai)</button>
+        <button class="dialect-btn">ရှာယန်း</button>
+    </div>
+
+    <div class="streak-container">
+        <div class="streak-number">၅</div>
+        <div class="leaf-svg l1">
+            <svg viewBox="0 0 100 100"><path d="M50 80 C 20 80, 10 50, 50 20 C 90 50, 80 80, 50 80" fill="#4F7942"/><path d="M50 80 L 50 25" stroke="#3e5f34" stroke-width="2" fill="none"/></svg>
+        </div>
+        <div class="leaf-svg l2">
+            <svg viewBox="0 0 100 100"><path d="M50 80 C 20 80, 10 50, 50 20 C 90 50, 80 80, 50 80" fill="#4F7942"/><path d="M50 80 L 50 25" stroke="#3e5f34" stroke-width="2" fill="none"/></svg>
+        </div>
+        <div class="leaf-svg l3">
+            <svg viewBox="0 0 100 100"><path d="M50 80 C 20 80, 10 50, 50 20 C 90 50, 80 80, 50 80" fill="#4F7942"/><path d="M50 80 L 50 25" stroke="#3e5f34" stroke-width="2" fill="none"/></svg>
+        </div>
+        <div class="leaf-svg l4">
+            <svg viewBox="0 0 100 100"><path d="M50 80 C 20 80, 10 50, 50 20 C 90 50, 80 80, 50 80" fill="#4F7942"/><path d="M50 80 L 50 25" stroke="#3e5f34" stroke-width="2" fill="none"/></svg>
+        </div>
+        <div class="leaf-svg l5">
+            <svg viewBox="0 0 100 100"><path d="M50 80 C 20 80, 10 50, 50 20 C 90 50, 80 80, 50 80" fill="#4F7942"/><path d="M50 80 L 50 25" stroke="#3e5f34" stroke-width="2" fill="none"/></svg>
+        </div>
+    </div>
+    <p style="color: var(--gold); margin-top: -10px; margin-bottom: 25px;">လက်ဖက်ညွန့် ၅ ညွန့် ရှင်သန်နေပြီ</p>
+
+    <div class="card">
+        <div style="width: 100%; height: 160px; background: #eee; border-radius: 15px; display: flex; align-items: center; justify-content: center; color: #ccc;">
+            <span class="material-icons-round" style="font-size: 50px;">image</span>
+        </div>
+        <h1 class="word-main">ရိုဆေ</h1>
+        <p class="word-sub">Ro Say (မင်္ဂလာပါ)</p>
+        
+        <div class="action-btns">
+            <button class="circle-btn btn-audio">
+                <span class="material-icons-round">volume_up</span>
+            </button>
+            <button class="circle-btn btn-mic">
+                <span class="material-icons-round">mic</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="level-section">
+        <div class="level-info">
+            <span>Tea Picker</span>
+            <span>Village Elder</span>
+        </div>
+        <div class="progress-bg">
+            <div class="progress-fill"></div>
+        </div>
+    </div>
+
+    <div class="avatar-box">
+        <span class="material-icons-round" style="font-size: 45px; color: var(--maroon);">face</span>
+    </div>
+
+    <nav class="nav">
+        <a href="#" class="nav-item active"><span class="material-icons-round">home</span><br>ပင်မ</a>
+        <a href="#" class="nav-item"><span class="material-icons-round">book</span><br>အဘိဓာန်</a>
+        <a href="#" class="nav-item"><span class="material-icons-round">event</span><br>ပြက္ခဒိန်</a>
+        <a href="#" class="nav-item"><span class="material-icons-round">account_circle</span><br>ကိုယ်ရေး</a>
+    </nav>
+
+</body>
+</html>
